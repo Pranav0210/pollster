@@ -3,6 +3,7 @@ const userRouter = require("./userRouter.js")
 const pollRouter = require("./pollRouter.js")
 const authRouter = require("./authRouter.js")
 const votesRouter = require("./votesRouter.js")
+const commentRouter = require("./commentRouter.js")
 
 const { auth } = require("../../middleware/auth.js");
 
@@ -11,5 +12,6 @@ api_v1.use('/auth', authRouter)
 api_v1.use('/polls', auth, pollRouter)
 api_v1.use('/users', auth, userRouter)
 api_v1.use('/votes', auth, votesRouter)
+api_v1.use('/comments', auth, commentRouter)
 
 module.exports = api_v1;

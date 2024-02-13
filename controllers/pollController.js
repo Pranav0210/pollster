@@ -14,7 +14,16 @@ const createPoll = async (req, res) => {
             created_at: new Date(),
             created_by: userId
         });
-        res.status(StatusCodes.CREATED).json(poll);
+        
+        const vote = await Votes.create({
+            poll_id: poll._id,
+            total_votes: 0,
+            vote_share: choices.map(choice => ({choice:choice,votes:0})),
+            voters: []
+        });
+
+        const user = await User.findOneAndUpdate({_id:userId},{$inc:{polls_created:1}});
+        res.status(StatusCodes.CREATED).json({poll,vote,user});
     }
     catch(err){
         console.error(`ERR:`,err)

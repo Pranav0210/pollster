@@ -2,32 +2,35 @@ const Vote = require('../models/votesModel.js');
 const { StatusCodes } = require('http-status-codes');
 
 const addVote = async (req, res) => {
-    const { poll_id, choice } = req.body;
+    const { choice, userId } = req.body;
+    const { poll_id } = req.params;
     try {
         const voteDocument = await Vote.findOne({ poll_id });
-        if (vote) {
-            const choiceIndex = voteDocument.vote_share.findIndex(v => v.choice === choice);
-            if (choiceIndex !== -1) {
-                voteDocument.vote_share[choiceIndex].votes += 1;
-                voteDocument.total_votes += 1;
-            } else {
-                voteDocument.vote_share.push({ choice, votes: 1 });
-                voteDocument.total_votes += 1;
+        if (voteDocument) {
+            if(voteDocument.voters.includes(req.body.userId)) {
+                return res.status(StatusCodes.CONFLICT).json({ message: "User already voted" });
             }
-            await voteDocument.save();
-            res.status(200).json(voteDocument);
-        } else {
-            const newVote = await Vote.create({
-                poll_id,
-                total_votes: 1,
-                vote_share: [{ choice, votes: 1 }],
-                voters: [req.user._id]
+            voteDocument.vote_share.forEach(element => {
+                if(element.choice === choice){
+                    element.votes++;
+                    voteDocument.total_votes++;
+                    voteDocument.voters.push(userId);
+                } 
             });
-            res.status(StatusCodes.OK).json(newVote);
+            
+            await voteDocument.save();
+
+            const user = await  User.findOne({_id:userId});
+            user.polls_voted++;
+            await user.save();
+            
+            res.status(StatusCodes.OK).json(voteDocument);
+        } else {
+            res.status(StatusCodes.CONFLICT).json({ message: "Vote not found" });
         }
     } catch (error) {
         console.error(`ERR:`, error);
-        res.status(500);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR);
     }
 }
 

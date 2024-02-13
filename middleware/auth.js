@@ -17,7 +17,7 @@ const auth = async (req,res,next) => {
     if (!authorization) 
       return res.status(StatusCodes.UNAUTHORIZED).send({error: "You need to login first"});
     // Based on 'Bearer ksfljrewori384328289398432'
-    console.log(authorization)
+    
     const token = authorization.split(' ')[1];
     const { userId } = verify(token, process.env.ACCESS_TOKEN_SECRET);
     
