@@ -1,4 +1,5 @@
 const Vote = require('../models/votesModel.js');
+const User = require('../models/userModel.js')
 const { StatusCodes } = require('http-status-codes');
 
 const addVote = async (req, res) => {
@@ -23,7 +24,7 @@ const addVote = async (req, res) => {
             const user = await  User.findOne({_id:userId});
             user.polls_voted++;
             await user.save();
-            
+
             res.status(StatusCodes.OK).json(voteDocument);
         } else {
             res.status(StatusCodes.CONFLICT).json({ message: "Vote not found" });
