@@ -32,11 +32,19 @@ const auth = async (req,res,next) => {
     }
   }
   catch(error){
-    console.log("error in auth",error)
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "PLease try again later"});
+    if (error instanceof jwt.TokenExpiredError) {
+        // Handle JWT expiration error
+      res.status(StatusCodes.UNAUTHORIZED).json({error: "JWT token has expired"})
+      console.error('JWT token has expired');
+    } else {
+        // Handle other errors
+      console.error('JWT verification failed:', error.message);
+      console.log("error in auth",error)
+      res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({error: "PLease try again later"});
+    }
   }
 };
 
 module.exports = {
   auth,
-};
+}

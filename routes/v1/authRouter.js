@@ -14,20 +14,4 @@ authRouter.post('/logout', authController.logout);
 // 5. Get a new access token with a refresh token
 authRouter.post('/refresh-token', authController.refreshToken);
 
-// 4. Protected route
-authRouter.post('/protected', async (req, res) => {
-    try {
-      const userId = isAuth(req);
-      if (userId !== null) {
-        res.send({
-          data: 'This is protected data.',
-        });
-      }
-    } catch (err) {
-      res.send({
-        error: `${err.message}`,
-      });
-    }
-});
-  
 module.exports = authRouter
