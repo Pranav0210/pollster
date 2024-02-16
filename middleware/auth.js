@@ -1,4 +1,5 @@
 const { verify } = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 const { StatusCodes } = require('http-status-codes');
 const User = require('../models/userModel.js');
 

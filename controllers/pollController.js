@@ -1,5 +1,6 @@
 const Poll = require('../models/pollModel.js');
 const Votes = require('../models/votesModel.js');
+const User = require('../models/userModel.js');
 const {StatusCodes} = require('http-status-codes');
 const mongoose = require('mongoose');
 
@@ -22,7 +23,9 @@ const createPoll = async (req, res) => {
             voters: []
         });
 
-        const user = await User.findOneAndUpdate({_id:userId},{$inc:{polls_created:1}});
+        const user = await User.findOne({_id:userId});
+        user.polls_created++;
+        await user.save();
         res.status(StatusCodes.CREATED).json({poll,vote,user});
     }
     catch(err){
@@ -52,7 +55,7 @@ const getPoll = async (req, res) => {
         res.status(StatusCodes.OK).json(poll);
     }
     catch(error){
-        console.error(`ERR:`,err)
+        console.error(`ERR:`,error)
         res.status(StatusCodes.INTERNAL_SERVER_ERROR)
     }
 };

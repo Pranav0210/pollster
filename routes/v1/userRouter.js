@@ -10,4 +10,7 @@ userRouter.route('/:id')
     .patch(userController.updateUser)
     .delete(userController.deleteUser)
 
+userRouter.route('/:id/polls')
+    .get(userController.getUserPolls)
+
 module.exports = userRouter;

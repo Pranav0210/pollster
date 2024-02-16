@@ -59,12 +59,12 @@ const login = async (req, res) => {
   };
 
 const logout = async(req, res) => {
-    res.clearCookie('refreshtoken', { path: '/refresh_token' });
+    res.clearCookie('refreshtoken', { path: '/api/v1/auth/refresh-token' });
     // Logic here for also remove refreshtoken from db
     const user = await User.findOneAndUpdate({_id : req.userId}, { refreshtoken: '' });
     return res.status(StatusCodes.OK).json({
       message: 'Logged out',
-      user : user
+      user : user.email
     });
   };
 
